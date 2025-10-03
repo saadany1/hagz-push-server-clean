@@ -4,7 +4,7 @@
   "description": "Server-side push notification sender for HagzApp",
   "main": "index.js",
   "scripts": {
-    "start": "node simple-test.js",
+    "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "node test-notification.js"
   },
