@@ -1,7 +1,7 @@
 // Ultra-simple server that will definitely work
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 console.log('🚀 Starting server...');
 console.log('📋 Environment:', {
@@ -10,6 +10,8 @@ console.log('📋 Environment:', {
   SUPABASE_URL: process.env.SUPABASE_URL ? 'SET' : 'NOT SET',
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET'
 });
+
+console.log('🔍 All environment variables:', Object.keys(process.env).filter(key => key.includes('PORT') || key.includes('RAILWAY')));
 
 // Basic middleware
 app.use(express.json());
