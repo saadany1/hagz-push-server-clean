@@ -140,6 +140,56 @@ app.get('/test', (req, res) => {
   res.json({ message: 'Test endpoint working!', port: PORT });
 });
 
+// Test specific token endpoint
+app.post('/test-token', async (req, res) => {
+  try {
+    const { token, title = 'HAGZ Test', body, data = {} } = req.body;
+    
+    if (!token) {
+      return res.status(400).json({ error: 'Token is required' });
+    }
+    
+    console.log('🧪 Testing specific token:', token);
+    
+    // Send notification to specific token
+    const messages = [{
+      to: token,
+      title: title,
+      body: body || 'Test notification',
+      data: data,
+      sound: 'default',
+      priority: 'high'
+    }];
+    
+    const chunks = expo.chunkPushNotifications(messages);
+    const tickets = [];
+    
+    for (const chunk of chunks) {
+      try {
+        const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        tickets.push(...ticketChunk);
+        console.log(`✅ Sent test notification to token`);
+      } catch (error) {
+        console.error('❌ Error sending test notification:', error);
+      }
+    }
+    
+    res.json({
+      success: true,
+      message: `Test notification sent to token`,
+      token: token,
+      tickets: tickets
+    });
+    
+  } catch (error) {
+    console.error('❌ Test token error:', error);
+    res.status(500).json({ 
+      error: 'Failed to send test notification', 
+      details: error.message 
+    });
+  }
+});
+
 // Start server
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server successfully started on port ${PORT}`);
