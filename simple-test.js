@@ -1,33 +1,34 @@
-// Simple test server to debug Railway deployment
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Simple test to check Railway routing
+const https = require('https');
 
-// Basic middleware
-app.use(express.json());
+const SERVER_URL = 'https://hagz-production-11b7.up.railway.app';
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  console.log('Health check requested');
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    port: PORT,
-    env: process.env.NODE_ENV
+console.log('🔍 Testing Railway server routing...');
+console.log('📡 Server URL:', SERVER_URL);
+
+// Test with a simple GET request
+const req = https.get(`${SERVER_URL}/health`, (res) => {
+  console.log('📊 Response status:', res.statusCode);
+  console.log('📋 Response headers:', res.headers);
+  
+  let data = '';
+  res.on('data', (chunk) => data += chunk);
+  res.on('end', () => {
+    console.log('📄 Response body:', data);
+    
+    if (res.statusCode === 200) {
+      console.log('✅ Server is working!');
+    } else {
+      console.log('❌ Server returned error:', res.statusCode);
+    }
   });
 });
 
-// Test endpoint
-app.get('/test', (req, res) => {
-  res.json({ message: 'Server is working!' });
+req.on('error', (err) => {
+  console.error('❌ Request failed:', err.message);
 });
 
-// Start server with error handling
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📱 Health check: http://localhost:${PORT}/health`);
-}).on('error', (err) => {
-  console.error('❌ Server error:', err);
+req.setTimeout(10000, () => {
+  console.log('⏰ Request timeout');
+  req.destroy();
 });
-
-module.exports = app;
