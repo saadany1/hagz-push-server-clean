@@ -34,11 +34,18 @@ app.get('/test', (req, res) => {
 
 // Start server
 try {
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server successfully started on port ${PORT}`);
     console.log(`📱 Health check: http://localhost:${PORT}/health`);
     console.log(`🌐 Server is ready to accept connections`);
+    console.log(`🔗 Server address: ${server.address()}`);
   });
+  
+  server.on('error', (error) => {
+    console.error('❌ Server error:', error);
+    process.exit(1);
+  });
+  
 } catch (error) {
   console.error('❌ Failed to start server:', error);
   process.exit(1);
