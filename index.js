@@ -7,22 +7,15 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize Supabase with error handling
+// Initialize Supabase
 const supabaseUrl = process.env.SUPABASE_URL || 'https://wlzuzohbuonvfnembyyl.supabase.co';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-let supabase = null;
-
 if (!supabaseServiceKey) {
-  console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY not set - some features will be disabled');
-} else {
-  try {
-    supabase = createClient(supabaseUrl, supabaseServiceKey);
-    console.log('✅ Supabase client initialized');
-  } catch (error) {
-    console.error('❌ Failed to initialize Supabase:', error.message);
-  }
+  console.error('❌ SUPABASE_SERVICE_ROLE_KEY environment variable is required');
+  process.exit(1);
 }
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // Middleware
 app.use(cors());
@@ -36,10 +29,6 @@ app.get('/health', (req, res) => {
 // Send broadcast notification to all users
 app.post('/send-broadcast-notification', async (req, res) => {
   try {
-    if (!supabase) {
-      return res.status(500).json({ error: 'Supabase not configured' });
-    }
-
     const { title, message, data = {}, sound = true } = req.body;
 
     if (!title || !message) {
