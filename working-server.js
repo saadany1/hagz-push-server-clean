@@ -59,7 +59,7 @@ app.post('/send-notification-to-all', async (req, res) => {
     
     // Get all users with push tokens
     const { data: users, error } = await supabase
-      .from('profiles')
+      .from('user_profiles')
       .select('push_token')
       .not('push_token', 'is', null);
     
