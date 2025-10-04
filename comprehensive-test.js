@@ -1,7 +1,7 @@
 // Test with different approaches to bypass caching
 const https = require('https');
 
-const SERVER_URL = 'https://hagz-production-11b7.up.railway.app';
+const SERVER_URL = 'https://hagz-push-server-clean-production.up.railway.app';
 
 console.log('🔍 Testing Railway server with different approaches...');
 
